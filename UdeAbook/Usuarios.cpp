@@ -33,8 +33,7 @@ void creacion_usuarios() {
             const char* names = name_users[rand() % 5];
             const char* naci  = fechanac[rand() % 5];
 
-            archivo << names << i << ";"<< naci << ";"<< names << i << "@correoudebook.com;"<< citys << ";"<< "Colombia"<< endl;
-            cout <<names << i << ";"<< naci << ";"<< names << "@correoudebook.com;"<< citys << ";"<< "Colombia"<< endl;
+            archivo << names << i << ";"<< naci << ";"<< names << i << "@correoudebook.com;"<< citys << ";"<< "Colombia"<< ";"<< fecha << endl;
 
             if (archivo.fail()) {
                 throw runtime_error("Error en la escritura del archivo");
