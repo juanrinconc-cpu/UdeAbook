@@ -16,4 +16,43 @@ public:
     const char* getHoraActual() const;// devolver hora actual
 };
 
+class Usuario {
+private:
+    char correo[60];
+    Usuario** amigos;
+    int num_amigos;
+    int capacidad;
+
+    // Funciones auxiliares propias
+    static void copiarTexto(char* destino, const char* origen, int max);
+    static bool compararTexto(const char* a, const char* b);
+
+public:
+    Usuario(const char* c);
+    Usuario(const Usuario&) = delete;
+    Usuario& operator=(const Usuario&) = delete;
+    ~Usuario();
+
+    const char* getCorreo() const;
+    bool esAmigoDe(const Usuario* u) const;
+    bool agregarAmigo(Usuario* u);
+    void mostrarAmigos() const;
+
+    // Para que Plataforma pueda usar compararTexto
+    friend class Plataforma;
+};
+class Plataforma {
+private:
+    Usuario** usuarios;
+    int totalUsuarios;
+
+public:
+    Plataforma();
+    ~Plataforma();
+
+    void cargarUsuarios(const char* archivo);
+    void cargarAmigos(const char* archivo);
+    Usuario* buscarPorCorreo(const char* correo);
+    void mostrarTodo();
+};
 #endif // CLASES_H
