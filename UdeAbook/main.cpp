@@ -1,12 +1,11 @@
 #include "Clases.h"
+#include "Usuarios.h"
 #include <iostream>
 using namespace std;
 
 
 int main() {
-    Plataforma p;
-    p.cargarUsuarios("usuariosudeabook.txt");
-    p.cargarAmigos("Amigos.txt");
-    p.mostrarTodo();
+    creacion_usuarios();
+    generar_amistades();
     return 0;
 }

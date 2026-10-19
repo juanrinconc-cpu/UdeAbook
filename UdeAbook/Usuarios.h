@@ -6,4 +6,6 @@
 
 void creacion_usuarios();
 
+void generar_amistades();
+
 #endif // USUARIOS_H

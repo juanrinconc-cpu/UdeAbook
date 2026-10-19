@@ -18,41 +18,32 @@ public:
 
 class Usuario {
 private:
-    char correo[60];
-    Usuario** amigos;
+    char nombre[60];
+    char nacimiento[12];
+    char correo[100];
+    char ciudad[30];
+    char pais[10];
+    char fecha_registro[12];
+
     int num_amigos;
-    int capacidad;
-
-    // Funciones auxiliares propias
-    static void copiarTexto(char* destino, const char* origen, int max);
-    static bool compararTexto(const char* a, const char* b);
+    Usuario** amigos;
+    int total_amigos;
 
 public:
-    Usuario(const char* c);
-    Usuario(const Usuario&) = delete;
-    Usuario& operator=(const Usuario&) = delete;
+    Usuario();
     ~Usuario();
-
+    void asignar(const char* n, const char* nac, const char* c, const char* ciu, const char* p, const char* f);
+    void mostrar();
+    static void copiar_texto(char *destino,const char* origen,int max);
+    const char* getNombre() const;
+    const char* getNacimiento() const;
     const char* getCorreo() const;
-    bool esAmigoDe(const Usuario* u) const;
-    bool agregarAmigo(Usuario* u);
-    void mostrarAmigos() const;
-
-    // Para que Plataforma pueda usar compararTexto
-    friend class Plataforma;
-};
-class Plataforma {
-private:
-    Usuario** usuarios;
-    int totalUsuarios;
-
-public:
-    Plataforma();
-    ~Plataforma();
-
-    void cargarUsuarios(const char* archivo);
-    void cargarAmigos(const char* archivo);
-    Usuario* buscarPorCorreo(const char* correo);
-    void mostrarTodo();
+    const char* getCiudad() const;
+    const char* getPais() const;
+    const char* getFecha_registro() const;
+    static bool comparar_texto(const char* a, const char* b);
+    bool es_amigo(const Usuario* u);
+    bool agregar_amigo(Usuario* u);
+    void mostrar_amigos();
 };
 #endif // CLASES_H

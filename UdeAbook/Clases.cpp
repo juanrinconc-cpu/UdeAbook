@@ -1,7 +1,6 @@
 #include "Clases.h"
 #include <iostream>
 #include <ctime>
-#include <fstream>
 using namespace std;
 
 Fecha::Fecha() {
@@ -55,160 +54,91 @@ const char* Fecha::getHoraActual() const {
     return hora_actual;
 }
 
-// ======================= Usuario =======================
+Usuario::Usuario(): num_amigos(0),amigos(nullptr), total_amigos(0){
+    nombre[0]='\0';
+    nacimiento[0]='\0';
+    correo[0]='\0';
+    ciudad[0]='\0';
+    pais[0]='\0';
+    fecha_registro[0]='\0';
 
-void Usuario::copiarTexto(char* destino, const char* origen, int max) {
-    int i = 0;
+}
+Usuario::~Usuario(){
+    delete[]amigos;
+}
+
+void Usuario::copiar_texto(char *destino,const char* origen,int max){
+    int i=0;
     while (origen[i] != '\0' && i < max-1) {
-        destino[i] = origen[i];
-        i++;
+        destino[i]=origen[i];
+        i=i+1;
     }
-    destino[i] = '\0';
+    destino[i]='\0';
 }
-
-bool Usuario::compararTexto(const char* a, const char* b) {
-    int i = 0;
-    while (a[i] != '\0' && b[i] != '\0') {
-        if (a[i] != b[i]) return false;
-        i++;
-    }
-    return a[i] == b[i];
+void Usuario::asignar(const char* n, const char* nac, const char* c, const char* ciu, const char* p, const char* f){
+    copiar_texto(nombre, n, 60);
+    copiar_texto(nacimiento,nac,12);
+    copiar_texto(correo,c,100);
+    copiar_texto(ciudad,ciu,30);
+    copiar_texto(pais,p,10);
+    copiar_texto(fecha_registro,f,12);
 }
-
-Usuario::Usuario(const char* c) : amigos(nullptr), num_amigos(0), capacidad(0) {
-    copiarTexto(correo, c, 60);
+void Usuario::mostrar(){
+    cout << "Usuario: " << nombre << endl;
+    cout << "Nacimiento: " << nombre << endl;
+    cout << "Correo: " << correo << endl;
+    cout << "Pais: " << pais << endl;
+    cout << "Unidos desde: " << fecha_registro << endl;
 }
-
-Usuario::~Usuario() {
-    delete[] amigos;
-}
-
+const char* Usuario:: getNombre() const {
+    return nombre; }
+const char* Usuario:: getNacimiento() const {
+    return nacimiento; }
 const char* Usuario::getCorreo() const {
-    return correo;
-}
+    return correo; }
+const char* Usuario::getCiudad() const {
+    return ciudad; }
+const char* Usuario::getPais() const {
+    return pais; }
+const char* Usuario::getFecha_registro() const {
+    return fecha_registro; }
 
-bool Usuario::esAmigoDe(const Usuario* u) const {
-    for (int i = 0; i < num_amigos; i++)
-        if (amigos[i] == u) return true;
+bool Usuario::es_amigo(const Usuario* u){
+    for(int i=0; i< num_amigos;i++){
+        if(amigos[i]==u){
+            return true;
+        }
+    }
     return false;
 }
-
-bool Usuario::agregarAmigo(Usuario* u) {
-    if (u == this || esAmigoDe(u)) return false;
-    if (num_amigos == capacidad) {
-        int nueva = (capacidad == 0) ? 4 : capacidad * 2;
-        Usuario** nuevo = new Usuario*[nueva];
-        for (int i = 0; i < num_amigos; i++) nuevo[i] = amigos[i];
-        delete[] amigos;
-        amigos = nuevo;
-        capacidad = nueva;
+bool Usuario::agregar_amigo(Usuario* u){
+    if (u== this || es_amigo(u)){
+        return false;
     }
-    amigos[num_amigos++] = u;
+    if (num_amigos==total_amigos){
+        int capacidad;
+        if (total_amigos==0){
+            capacidad=4;
+        }
+        else{
+            capacidad=total_amigos*2;
+        }
+        Usuario** capacidad_nueva=new Usuario*[capacidad];
+        for(int j=0;j<num_amigos;j++){
+            capacidad_nueva[j]=amigos[j];
+        }
+        delete[]amigos;
+        amigos=capacidad_nueva;
+        total_amigos=capacidad;
+    }
+    amigos[num_amigos++]=u;
     return true;
 }
+void Usuario::mostrar_amigos(){
+    cout << "Amigos de " << nombre << ":";
+    for (int i = 0; i < num_amigos; ++i) {
+        cout << amigos[i]->getNombre() << endl;
 
-void Usuario::mostrarAmigos() const {
-    cout << "Amigos de " << correo << ": ";
-    for (int i = 0; i < num_amigos; i++) cout << amigos[i]->getCorreo() << " ";
-    cout << endl;
-}
-
-// ======================= Plataforma =======================
-
-Plataforma::Plataforma() : usuarios(nullptr), totalUsuarios(0) {}
-
-Plataforma::~Plataforma() {
-    for (int i = 0; i < totalUsuarios; i++) delete usuarios[i];
-    delete[] usuarios;
-}
-
-void Plataforma::cargarUsuarios(const char* archivo) {
-    ifstream in(archivo);
-    if (!in) { cout << "Error al abrir " << archivo << endl; return; }
-
-    char linea[200];
-    int count = 0;
-    while (in.getline(linea, 200)) if (linea[0] != '\0') count++;
-    if (!in.eof()) { cout << archivo << ": hay una linea de mas de 199 caracteres" << endl; return; }
-    in.clear();
-    in.seekg(0);
-
-    usuarios = new Usuario*[count];
-    totalUsuarios = 0;
-
-    int numLinea = 0;
-    while (in.getline(linea, 200)) {
-        numLinea++;
-        if (linea[0] == '\0') continue;
-
-        char correo[60] = "";
-        char buffer[60];
-        int campo = 0, j = 0;
-        for (int i = 0; ; i++) {
-            if (linea[i] == ';' || linea[i] == '\0') {
-                buffer[j] = '\0';
-                if (campo == 2) Usuario::copiarTexto(correo, buffer, 60);
-                campo++;
-                j = 0;
-                if (linea[i] == '\0') break;
-            } else if (j < 59) buffer[j++] = linea[i];
-        }
-        if (campo < 3 || correo[0] == '\0') {
-            cerr << archivo << ":" << numLinea << ": linea invalida, se omite" << endl;
-            continue;
-        }
-        usuarios[totalUsuarios++] = new Usuario(correo);
     }
 }
 
-Usuario* Plataforma::buscarPorCorreo(const char* correo) {
-    for (int i = 0; i < totalUsuarios; i++)
-        if (Usuario::compararTexto(usuarios[i]->getCorreo(), correo))
-            return usuarios[i];
-    return nullptr;
-}
-
-void Plataforma::cargarAmigos(const char* archivo) {
-    ifstream in(archivo);
-    if (!in) { cerr << "Error al abrir " << archivo << endl; return; }
-
-    char linea[200];
-    int numLinea = 0;
-    while (in.getline(linea, 200)) {
-        numLinea++;
-        if (linea[0] == '\0') continue;
-
-        char correo1[60] = "", correo2[60] = "";
-        char buffer[60];
-        int campo = 0, j = 0;
-        for (int i = 0; ; i++) {
-            if (linea[i] == ';' || linea[i] == '\0') {
-                buffer[j] = '\0';
-                if (campo == 0) Usuario::copiarTexto(correo1, buffer, 60);
-                if (campo == 1) Usuario::copiarTexto(correo2, buffer, 60);
-                campo++;
-                j = 0;
-                if (linea[i] == '\0') break;
-            } else if (j < 59) buffer[j++] = linea[i];
-        }
-        if (campo != 2 || correo1[0] == '\0' || correo2[0] == '\0') {
-            cerr << archivo << ":" << numLinea << ": debe tener exactamente 2 campos" << endl;
-            continue;
-        }
-
-        Usuario* u1 = buscarPorCorreo(correo1);
-        Usuario* u2 = buscarPorCorreo(correo2);
-        if (!u1) { cerr << archivo << ":" << numLinea << ": no existe " << correo1 << endl; continue; }
-        if (!u2) { cerr << archivo << ":" << numLinea << ": no existe " << correo2 << endl; continue; }
-        if (!u1->agregarAmigo(u2)) {
-            cerr << archivo << ":" << numLinea << ": amistad repetida o invalida" << endl;
-            continue;
-        }
-        u2->agregarAmigo(u1);
-    }
-    if (!in.eof()) cerr << archivo << ": se detuvo antes del final (linea demasiado larga)" << endl;
-}
-
-void Plataforma::mostrarTodo() {
-    for (int i = 0; i < totalUsuarios; i++) usuarios[i]->mostrarAmigos();
-}
