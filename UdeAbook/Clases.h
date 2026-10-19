@@ -41,9 +41,12 @@ public:
     const char* getCiudad() const;
     const char* getPais() const;
     const char* getFecha_registro() const;
+    int getNumAmigos()const;
     static bool comparar_texto(const char* a, const char* b);
     bool es_amigo(const Usuario* u);
     bool agregar_amigo(Usuario* u);
     void mostrar_amigos();
+    Usuario** cargarUsuarios(int& cantidad, long long& it);
+    Usuario* buscarUsuario(Usuario** usuarios, int cantidad, const char* nombre, long long& it);
 };
 #endif // CLASES_H

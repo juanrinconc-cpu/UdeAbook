@@ -1,6 +1,8 @@
 #include "Clases.h"
 #include <iostream>
 #include <ctime>
+#include <cstring>
+#include <fstream>
 using namespace std;
 
 Fecha::Fecha() {
@@ -102,7 +104,9 @@ const char* Usuario::getPais() const {
     return pais; }
 const char* Usuario::getFecha_registro() const {
     return fecha_registro; }
-
+int Usuario::getNumAmigos()const{
+    return num_amigos;
+}
 bool Usuario::es_amigo(const Usuario* u){
     for(int i=0; i< num_amigos;i++){
         if(amigos[i]==u){
@@ -140,5 +144,44 @@ void Usuario::mostrar_amigos(){
         cout << amigos[i]->getNombre() << endl;
 
     }
+}
+
+Usuario** cargarUsuarios(int& cantidad, long long& it) {
+    cantidad = 0;
+    ifstream archivo("usuariosudeabook.txt");
+    if (!archivo.is_open()) return nullptr;
+
+    Usuario** lista = new Usuario*[1000];
+    char linea[256];
+
+    while (cantidad < 1000 && archivo.getline(linea, sizeof(linea))) {
+        ++it;
+        if (strlen(linea) == 0) continue;
+
+        char* campos[6];
+        int n = 0;
+        char* tok = strtok(linea, "|");
+        while (tok && n < 6) {
+            campos[n++] = tok;
+            tok = strtok(nullptr, "|");
+        }
+        if (n != 6) continue;
+
+        Usuario* u = new Usuario();
+        u->asignar(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5]);
+        lista[cantidad++] = u;
+    }
+    archivo.close();
+    return lista;
+}
+
+Usuario* buscarUsuario(Usuario** usuarios, int cantidad, const char* nombre, long long& it) {
+    for (int i = 0; i < cantidad; i++) {
+        it=it+1;
+        if (strcmp(usuarios[i]->getNombre(), nombre) == 0) {
+            return usuarios[i];
+        }
+    }
+    return nullptr;
 }
 
