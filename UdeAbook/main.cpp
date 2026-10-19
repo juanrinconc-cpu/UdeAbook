@@ -74,7 +74,7 @@ int autenticar() {
             return i;
         }
     }
-    cout << "Usuario o contraseña incorrectos."<< endl;
+    cout << "Usuario o contrasenia incorrectos."<< endl;
     return -1;
 }
 
@@ -95,7 +95,7 @@ int main() {
 
     Usuario* activo = buscarUsuario(usuarios, cantidadUsuarios, usuariosLogin[indice], it);
     if (!activo) {
-        cout << "No se encontro el perfil del usuario autenticado." << endl;
+        cout << "No se encontro el perfil del usuario autenticado" << endl;
         return 1;
     }
 
@@ -106,7 +106,7 @@ int main() {
     char opcion;
     do {
         cout << "\nBienvenido a UdeaBook //" << activo->getNombre() << endl;
-        cout << "1. Ver álbum\n2. Agregar foto\n3. Enviar mensaje\n4. Ver amigos\nS. Salir\nOpción: ";
+        cout << "1. Ver album\n2. Agregar foto\n3. Enviar mensaje\n4. Ver amigos\nS. Salir\nOpcion: ";
         cin >> opcion;
 
         if (opcion == '1') {
@@ -128,14 +128,14 @@ int main() {
             cin >> destino;
             Usuario* receptor = buscarUsuario(usuarios, cantidadUsuarios, destino, it);
             if (!receptor) {
-                cout << "Usuario no encontrado.\n";
+                cout << "Usuario no encontrado" << endl;
             } else {
                 cout << "Contenido del mensaje: ";
                 cin.ignore();
                 cin.getline(contenido, 200);
                 strcpy(fecha, "2026-10-18");
                 mensajes[numMensajes++] = new Mensaje(activo->getNombre(), receptor->getNombre(), contenido, fecha);
-                cout << "Mensaje enviado.\n";
+                cout << "Mensaje enviado" << endl;
             }
         } else if (opcion == '4') {
             activo->mostrar_amigos();

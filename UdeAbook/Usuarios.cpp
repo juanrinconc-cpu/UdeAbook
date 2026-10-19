@@ -48,7 +48,7 @@ void creacion_usuarios() {
         cout << "Error: " << e.what() << endl;
     }
     catch (...) {
-        cout << "Error desconocido durante la creación de usuarios." << endl;
+        cout << "Error desconocido durante la creacion de usuarios." << endl;
     }
 }
 
@@ -196,8 +196,8 @@ void generar_amistades(){
 
     archivoAmistades.close();
 
-    cout << "Usuarios leidos: " << cantidad_usuarios << "\n";
-    cout << "Amistades generadas: " << totalAmistades << "\n";
+    cout << "Usuarios leidos: " << cantidad_usuarios << endl;
+    cout << "Amistades generadas: " << totalAmistades << endl;
     cout << "Archivo creado: amistades.txt\n";
 
     for (int i = 0; i < cantidad_usuarios; i++) {
@@ -207,4 +207,5 @@ void generar_amistades(){
     delete[] amistades;
     delete[] usuarios;
 }
+
 
